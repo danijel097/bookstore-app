@@ -16,6 +16,8 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     List<Book> findByBookPriceBetween(Double minPrice, Double maxPrice);
 
-    @Query("""SELECT b.bookGenre, COUNT(b) FROM Book b GROUP BY b.bookGenre""")
+    @Query("""
+           SELECT b.bookGenre, COUNT(b) FROM Book b GROUP BY b.bookGenre
+           """)
     List<Object[]> countBooksByGenre();
 }

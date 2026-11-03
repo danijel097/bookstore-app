@@ -17,16 +17,16 @@ public class Book {
     private String bookGenre;
     private int publishingYear;
 
-    public Book(){
-    }
-    public Book(String bookName, Double bookPrice, String authorName,
+    public Book(Long bookid, String bookName, Double bookPrice, String authorName,
                 String bookGenre, Integer publishingYear) {
+        this.bookId = bookid;
         this.bookName = bookName;
         this.bookPrice = bookPrice;
         this.authorName = authorName;
         this.bookGenre = bookGenre;
         this.publishingYear = publishingYear;
     }
+
     public Long getBookId() {
         return bookId;
     }

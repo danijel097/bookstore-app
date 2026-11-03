@@ -27,6 +27,10 @@ public class Book {
         this.publishingYear = publishingYear;
     }
 
+    public Book() {
+
+    }
+
     public Long getBookId() {
         return bookId;
     }

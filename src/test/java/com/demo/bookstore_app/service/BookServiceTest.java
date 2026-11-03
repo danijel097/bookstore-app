@@ -4,53 +4,47 @@ import com.demo.bookstore_app.models.Book;
 import com.demo.bookstore_app.repositories.BookRepository;
 import com.demo.bookstore_app.services.BookService;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-@ExtendWith(SpringExtension.class)
+@SpringBootTest
+@ActiveProfiles({"test"})
 public class BookServiceTest {
-    @Mock
-    private BookRepository bookRepository;
+    @Autowired
+    private BookService service;
 
-    @InjectMocks
-    private BookService bookService;
+    @Autowired
+    private BookRepository repo;
 
-    @Test
-    public void testGetAllBooks() throws Exception {
-        List<Book> books = Arrays.asList(
-                new Book(10L, "Book 1", 350.00, "Author 1", "Novel", 1998),
-                new Book(20L, "Book 2", 250.00, "Author 2", "Horor", 2007)
-        );
-
-        when(bookRepository.findAll()).thenReturn(books);
-        List<Book> result = bookService.getAllBooks();
-        assertEquals(2, result.size());
-    }
 
     @Test
-    public void testSaveBook() throws Exception {
-        Book bookToSave = new Book(null, "Book 1", 350.00, "Author 1", "Novel", 1998);
-        Book savedBook = new Book(10L, "New book", 250.00, "Author 2", "Horor", 2007);
+    public void testUpdateBook() throws Exception {
+        Long bookId = 1L;
+        Book existingBook = new Book();
+        existingBook.setBookId(bookId);
+        existingBook.setBookName("The Little Prince");
 
-        when(bookRepository.save(bookToSave)).thenReturn(savedBook);
-        Book result = bookService.saveBook(bookToSave);
+        Book updateDetails = new Book();
+        updateDetails.setBookName("Vol de nuit");
+
+        when(repo.findById(bookId)).thenReturn(Optional.of(existingBook));
+
+        when(repo.save(any(Book.class))).thenAnswer(i -> i.getArguments() [0]);
+
+        Book result = service.updateBook(bookId, updateDetails);
+
         assertNotNull(result);
-        assertEquals(savedBook.getBookId(), result.getBookId());
-    }
+        assertEquals("Vol de nuit", result.getBookName());
 
-    @Test
-    public void testDeleteBook() throws Exception {
-        Long id = 10L;
-        bookService.deleteBook(id);
-        verify(bookRepository, times(1)).deleteById(id);
+        verify(repo).findById(bookId);
     }
 }

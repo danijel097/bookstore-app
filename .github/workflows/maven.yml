@@ -27,26 +27,8 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
-    services:
-      postgres:
-        image: postgres:16
-        env:
-          POSTGRES_DB: bookstore
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd="pg_isready -U postgres -d bookstore"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
     - name: Build with Maven
-      run: mvn -B package
-      env:
-        SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/bookstore
-        SPRING_DATASOURCE_USERNAME: postgres
-        SPRING_DATASOURCE_PASSWORD: postgres
+      run: mvn -B package --file pom.xml
 
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     - name: Update dependency graph

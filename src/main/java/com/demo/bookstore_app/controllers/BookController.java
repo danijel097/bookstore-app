@@ -21,7 +21,7 @@ public class BookController {
     public ResponseEntity getAllBooks() {
         try {
             List<Book> books = bookService.getAllBooks();
-            return ResponseEntity.ok("Books from FEATURE branch");
+            return ResponseEntity.ok(books);
         } catch (Exception ex) {
             return new ResponseEntity(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -41,7 +41,7 @@ public class BookController {
     public ResponseEntity deleteBook(@PathVariable("bookId") Long id) {
         try {
             bookService.deleteBook(id);
-            return ResponseEntity.ok("Book deleted!");
+            return ResponseEntity.ok("Successfully deleted book!");
         } catch (Exception ex) {
             return new ResponseEntity(ex.getMessage(), HttpStatus.NOT_FOUND);
         }
@@ -61,7 +61,7 @@ public class BookController {
     public ResponseEntity createBook(@RequestBody Book newBook) {
         try {
             Book addedBook = bookService.saveBook(newBook);
-            return new ResponseEntity(null, HttpStatus.CREATED);
+            return new ResponseEntity(addedBook, HttpStatus.CREATED);
         } catch (Exception ex) {
             return new ResponseEntity(ex.getMessage(), HttpStatus.NOT_FOUND);
         }
@@ -79,14 +79,14 @@ public class BookController {
             if (title != null) {
                 books = bookService.searchBooksByTitle(title);
             } else if (author != null) {
-                books = bookService.searchBooksByGenre(genre);
-            } else if (genre != null) {
                 books = bookService.searchBooksByAuthor(author);
+            } else if (genre != null) {
+                books = bookService.searchBooksByGenre(genre);
             } else {
                 books = bookService.getAllBooks();
             }
-                return ResponseEntity.ok(books);
-            }
+            return ResponseEntity.ok(books);
+        }
         catch (Exception ex) {
             return new ResponseEntity(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -96,18 +96,18 @@ public class BookController {
     public ResponseEntity<List<Book>> getBooksByPrice(
             @RequestParam("minPrice") Double minPrice,
             @RequestParam("maxPrice") Double maxPrice
-    ) {
-        if (minPrice > maxPrice ) {
+    ){
+        if(minPrice > maxPrice) {
             return ResponseEntity.badRequest().build();
         }
 
-        List<Book> books = bookService.getBookByPriceRange(minPrice, maxPrice);
+        List<Book> books = bookService.getBooksByPriceRange(minPrice, maxPrice);
 
         return ResponseEntity.ok(books);
     }
 
     @GetMapping("/count-by-genre")
-    public ResponseEntity<Map<String, Long>> getBookByGanre() {
+    public ResponseEntity<Map<String, Long>> getBookCountByGenre(){
         return ResponseEntity.ok(bookService.getBookCountByGenre());
     }
 }

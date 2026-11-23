@@ -44,7 +44,7 @@ public class BookService {
             book.setPublishingYear(updatedBook.getPublishingYear());
             return bookRepository.save(book);
         }).orElseThrow(()->
-         new Exception("Cannot save this book!"));
+                new Exception("Cannot save this book!"));
     }
 
     public void deleteBook(Long bookId) throws Exception {
@@ -69,16 +69,16 @@ public class BookService {
         return bookRepository.findByBookGenreContainingIgnoreCase(genre);
     }
 
-    public List<Book> getBookByPriceRange(Double minPrice, Double maxPrice) {
+    public List<Book> getBooksByPriceRange(Double minPrice, Double maxPrice) {
         return bookRepository.findByBookPriceBetween(minPrice, maxPrice);
     }
 
-    public Map<String, Long> getBookCountByGenre() {
+    public Map<String, Long> getBookCountByGenre(){
         List<Object[]> results = bookRepository.countBooksByGenre();
 
         Map<String, Long> counts = new HashMap<>();
 
-        for (Object[] result : results) {
+        for(Object[] result : results) {
             String genre = (String) result[0];
             Long count = ((Number) result[1]).longValue();
 
@@ -86,5 +86,6 @@ public class BookService {
         }
 
         return counts;
+
     }
 }

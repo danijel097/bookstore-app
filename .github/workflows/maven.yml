@@ -26,3 +26,23 @@ jobs:
           path: target/surefire-reports/
           if-no-files-found: warn
           retention-days: 7
+      # Build Docker image
+      - name: Build Docker image
+        run: docker build -t bookstore-app .
+      # Run container to test
+      - name: Run Docker container
+        run: docker run -d -p 8088:8088 --name test-container bookstore-app
+      # Stop and remove container
+      - name: Stop Docker container
+        run: docker stop test-container && docker rm test-container
+
+      # Docker Compose
+      - name: Build and start containers
+        run: docker compose up -d --build
+      - name: Wait for services
+        run: sleep 30
+      - name: Show container status
+        run: docker compose ps
+      - name: Stop containers
+        if: always()
+        run: docker compose down
